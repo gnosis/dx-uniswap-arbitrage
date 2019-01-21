@@ -1,0 +1,53 @@
+{
+  "name": "@gnosis/arbitrage",
+  "version": "0.1.0",
+  "description": "Truffle Boilerplate with solium, linguist, zeppelin, migrations, tests &tc",
+  "scripts": {
+    "test": "truffle test test/*.test.js",
+    "deploy": "truffle migrate --reset --compile-all",
+    "lint": "solium --dir contracts/",
+    "lint:watch": "solium --watch --dir contracts/",
+    "lint:fix": "solium  --dir contracts/ --fix",
+    "prettier": "prettier --write --tab-width 4 --print-width 140 'contracts/**/*.sol'",
+    "networks-extract": "node src/extract_network_info.js",
+    "networks-inject": "node src/inject_network_info.js",
+    "networks-reset": "mkdir -p build/contracts && npx truffle networks --clean && npm run networks-inject",
+    "networks": "npx truffle networks",
+    "migrate": "npx truffle migrate --reset --compile-all",
+    "local": "yarn migrate --network development",
+    "rinkeby": "yarn migrate --network rinkeby",
+    "mainnet": "yarn migrate --network mainnet",
+    "debug": "npx truffle compile --reset --compile-all && npx truffle test test/Debug.js"
+  },
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "@gnosis.pm/util-contracts": "^2.0.0-RC4",
+    "bignumber.js": "^8.0.1",
+    "dotenv": "^5.0.1",
+    "openzeppelin-solidity": "^2.1.1",
+    "prettier": "^1.15.3",
+    "prettier-plugin-solidity-refactor": "^1.0.0-alpha.14",
+    "solium": "^1.1.7",
+    "truffle": "^5.0.2",
+    "truffle-hdwallet-provider": "^1.0.0-web3one.3"
+  },
+  "dependencies": {
+    "@gnosis.pm/mock-contract": "^3.0.7",
+    "solc": "^0.5.2",
+    "web3-provider-engine": "^14.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gnosis/dx-uniswap-arbitrage"
+  },
+  "keywords": [
+    "truffle",
+    "ethereum",
+    "web3"
+  ],
+  "author": "Billy Rennekamp <billy.rennekamp@gmail.com>",
+  "license": "ISC"
+}
