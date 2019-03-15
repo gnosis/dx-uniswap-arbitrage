@@ -12,6 +12,8 @@
     "networks-extract": "node src/extract_network_info.js",
     "networks-inject": "node src/inject_network_info.js",
     "networks-reset": "mkdir -p build/contracts && npx truffle networks --clean && npm run networks-inject",
+    "compile": "npx truffle compile",
+    "restore": "rm -rf build && npm run compile && npm run networks-reset",
     "networks": "npx truffle networks",
     "migrate": "npx truffle migrate --reset --compile-all",
     "local": "yarn migrate --network development",
