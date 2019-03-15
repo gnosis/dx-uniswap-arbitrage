@@ -1,20 +1,26 @@
 ## Arbitrage DutchX/Uniswap
+Contract that arbitrages between:
+* DutchX protocol: [http://dutchx.readthedocs.io/en/latest/](http://dutchx.readthedocs.io/en/latest/)
+* Uniswap protocol: [https://uniswap.io/](https://uniswap.io/)
 
-## Install
+## Setup
 ```
+# Install dependencies
 yarn
 
-or 
+# Compile contracts and inject networks
+yarn restore
 
-// then create a .env file that looks like this:
-
-TRUFFLE_MNEMONIC=candy maple cake sugar pudding cream honey rich smooth crumble sweet treat
-GANACHE_MNEMONIC=grid voyage cream cry fence load stove sort grief fuel room save
-TESTNET_MNEMONIC=a twelve word mnemonic phrase that works with some test network buddy
-INFURA_API_KEY=yOUrInfURaKEy
-
+# Check out the contract addresses
+yarn networks
 ```
 
+Create a file `.env` using [.env.example](.env.example) as your template.
+
+```bash
+# Create env file
+cp .env.example .env
+```
 ## Run
 ```
 yarn lint:watch
@@ -28,11 +34,13 @@ yarn test
 
 ## Deploy
 ```
+# Local: Run ganache (rpc) in one tab, and then migrate
+yarn rpc
 yarn migrate
-or
-yarn local
-or
-yarn rinkeby
-or
-yarn mainnet
+
+# Rinkeby
+yarn migrate --network development
+
+# Mainnet
+yarn mainnet --network mainnet
 ```

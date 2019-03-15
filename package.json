@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "Truffle Boilerplate with solium, linguist, zeppelin, migrations, tests &tc",
   "scripts": {
+    "rpc": "ganache-cli -d --mnemonic 'grid voyage cream cry fence load stove sort grief fuel room save' --defaultBalanceEther '500000000000000000000'",
     "test": "truffle test test/*.test.js",
+    "preversion": "npm run restore",
     "deploy": "truffle migrate --reset --compile-all",
     "lint": "solium --dir contracts/",
     "lint:watch": "solium --watch --dir contracts/",
@@ -16,9 +18,6 @@
     "restore": "rm -rf build && npm run compile && npm run networks-reset",
     "networks": "npx truffle networks",
     "migrate": "npx truffle migrate --reset --compile-all",
-    "local": "yarn migrate --network development",
-    "rinkeby": "yarn migrate --network rinkeby",
-    "mainnet": "yarn migrate --network mainnet",
     "debug": "npx truffle compile --reset --compile-all && npx truffle test test/Debug.js"
   },
   "main": "index.js",
