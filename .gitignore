@@ -13,3 +13,5 @@ installed_contracts
 .DS_Store
 
 .env
+.history
+build

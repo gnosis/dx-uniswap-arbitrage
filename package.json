@@ -1,5 +1,5 @@
 {
-  "name": "@gnosis/arbitrage",
+  "name": "@gnosis.pm/dx-uniswap-arbitrage",
   "version": "0.1.0",
   "description": "Truffle Boilerplate with solium, linguist, zeppelin, migrations, tests &tc",
   "scripts": {
