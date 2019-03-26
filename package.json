@@ -1,6 +1,6 @@
 {
   "name": "@gnosis.pm/dx-uniswap-arbitrage",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Truffle Boilerplate with solium, linguist, zeppelin, migrations, tests &tc",
   "scripts": {
     "rpc": "ganache-cli -d --mnemonic 'grid voyage cream cry fence load stove sort grief fuel room save' --defaultBalanceEther '500000000000000000000'",
