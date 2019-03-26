@@ -13,7 +13,7 @@ module.exports = {
     development: {
       provider() {
         var wallet = new HDWalletProvider(
-          process.env.GANACHE_MNEMONIC,
+          process.env.TRUFFLE_MNEMONIC,
           'http://localhost:8545/'
         )
         var nonceTracker = new NonceTrackerSubprovider()
