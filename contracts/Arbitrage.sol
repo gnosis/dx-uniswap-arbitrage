@@ -5,15 +5,15 @@ import "./IUniswapFactory.sol";
 import "./IDutchExchange.sol";
 import "./ITokenMinimal.sol";
 import "./SafeERC20.sol";
-import "../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /// @title Uniswap Arbitrage - Executes arbitrage transactions between Uniswap and DutchX.
 /// @author Billy Rennekamp - <billy@gnosis.pm>
 contract Arbitrage is Ownable {
-    
+
     uint constant max = uint(-1);
 
-    IUniswapFactory public uniFactory; 
+    IUniswapFactory public uniFactory;
     IDutchExchange public dutchXProxy;
 
     event Profit(uint profit, bool wasDutchOpportunity);
@@ -58,7 +58,7 @@ contract Arbitrage is Ownable {
         // If amount is zero, deposit the entire contract balance.
         address(uint160(owner())).transfer(amount == 0 ? address(this).balance : amount);
     }
-    
+
     /// @dev Only owner function to withdraw WETH from the DutchX, convert it to Ether and keep it in contract
     /// @param amount The amount of WETH to withdraw and convert.
     function withdrawEther(uint amount) external onlyOwner {
@@ -120,7 +120,7 @@ contract Arbitrage is Ownable {
         require(newBalance >= amount, "deposit didn't work");
     }
 
-    /// @dev Executes a trade opportunity on dutchX. Assumes that there is a balance of WETH already on the dutchX 
+    /// @dev Executes a trade opportunity on dutchX. Assumes that there is a balance of WETH already on the dutchX
     /// @param arbToken Address of the token that should be arbitraged.
     /// @param amount Amount of Ether to use in arbitrage.
     /// @return Returns if transaction can be executed.
@@ -179,12 +179,12 @@ contract Arbitrage is Ownable {
         // deadline is now since trade is atomic
         // solium-disable-next-line security/no-block-members
         uint256 tokensBought = IUniswapExchange(uniFactory.getExchange(arbToken)).ethToTokenSwapInput.value(amount)(1, block.timestamp);
-        
+
         // tokens need to be approved for the dutchX before they are deposited
         _depositToken(arbToken, tokensBought);
 
         address etherToken = dutchXProxy.ethToken();
-        
+
         // The order of parameters for getAuctionIndex don't matter
         uint256 dutchAuctionIndex = dutchXProxy.getAuctionIndex(arbToken, etherToken);
 
@@ -194,12 +194,12 @@ contract Arbitrage is Ownable {
         dutchXProxy.postBuyOrder(etherToken, arbToken, dutchAuctionIndex, max);
         // solium-disable-next-line no-unused-vars
         (uint etherReturned, ) = dutchXProxy.claimBuyerFunds(etherToken, arbToken, address(this), dutchAuctionIndex);
-        
+
         // gas costs were excluded because worse case scenario the tx fails and gas costs were spent up to here anyway
         // best worst case scenario the profit from the trade alleviates part of the gas costs even if still no total profit
         require(etherReturned >= amount, "no profit");
         emit Profit(etherReturned, false);
         // Ether returned is already in dutchX balance where Ether is assumed to be stored when not being used.
     }
-    
+
 }

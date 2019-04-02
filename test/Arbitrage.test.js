@@ -2,10 +2,10 @@ var ArbitrageLocal = artifacts.require('./ArbitrageLocal.sol')
 
 const MockContract = artifacts.require('./MockContract.sol');
 const SafeERC20 = artifacts.require('./SafeERC20.sol');
-const IToken = artifacts.require('./interface/IToken.sol');
-const IDutchExchange = artifacts.require('./interface/IDutchExchange.sol');
-const IUniswapFactory = artifacts.require('./interface/IUniswapFactory.sol');
-const IUniswapExchange = artifacts.require('./interface/IUniswapExchange.sol');
+const IToken = artifacts.require('./IToken.sol');
+const IDutchExchange = artifacts.require('./IDutchExchange.sol');
+const IUniswapFactory = artifacts.require('./IUniswapFactory.sol');
+const IUniswapExchange = artifacts.require('./IUniswapExchange.sol');
 
 const abi = require('ethereumjs-abi')
 var BigNumber = require('bignumber.js')
@@ -26,11 +26,11 @@ contract('ArbitrageLocal', function(accounts) {
 
   before(async () => {
       try {
-        var totalGas = new BigNumber(0)
+        let totalGas = new BigNumber(0)
 
         // Create Mocks
         mockEthToken = await MockContract.new()
-        var tx = await web3.eth.getTransactionReceipt(mockEthToken.transactionHash)
+        let tx = await web3.eth.getTransactionReceipt(mockEthToken.transactionHash)
         totalGas = totalGas.plus(tx.gasUsed)
         console.log(_ + tx.gasUsed + ' - Deploy mockEthToken')
 
@@ -126,7 +126,7 @@ contract('ArbitrageLocal', function(accounts) {
       assert(tx.receipt.status, tx.receipt.status + ' wasn\'t true')
     })
 
-    it('should not revert and update blances when transferEther()', async () => {      
+    it('should not revert and update blances when transferEther()', async () => {
       balanceLast = web3.utils.toBN(await web3.eth.getBalance(accounts[0]))
       const sendEtherToContract = await web3.eth.sendTransaction({
         from: accounts[0],
@@ -265,19 +265,19 @@ contract('ArbitrageLocal', function(accounts) {
     })
 
     async function setMocks() {
-      
+
       const iToken_withdraw = iToken.contract.methods.withdraw(0).encodeABI()
       await mockEthToken.givenMethodReturnBool(iToken_withdraw, true)
 
       const deposit = iToken.contract.methods.deposit().encodeABI()
       await mockEthToken.givenMethodReturn(deposit, [])
-      
+
       const balanceOf = iToken.contract.methods.balanceOf(emptyAdd).encodeABI()
       await mockEthToken.givenMethodReturnUint(balanceOf, '1')
-      
+
       const allowance = iToken.contract.methods.allowance(emptyAdd, emptyAdd).encodeABI()
       await mockEthToken.givenMethodReturnUint(allowance, '0')
-      
+
       const approve = iToken.contract.methods.approve(emptyAdd, 0).encodeABI()
       await mockEthToken.givenMethodReturnBool(approve, true)
 
@@ -310,15 +310,15 @@ contract('ArbitrageLocal', function(accounts) {
 
       const tokenToEthSwapInput = iUniswapExchange.contract.methods.tokenToEthSwapInput(0, 0, 0).encodeABI()
       await mockUniswapExchange.givenMethodReturnUint(tokenToEthSwapInput, 1)
-      
+
       const ethToTokenSwapInput = iUniswapExchange.contract.methods.ethToTokenSwapInput(0, 0).encodeABI()
       await mockUniswapExchange.givenMethodReturnUint(ethToTokenSwapInput, 1)
-      
+
       const getExchange = iUniswapFactory.contract.methods.getExchange(emptyAdd).encodeABI()
       await mockUniswapFactory.givenMethodReturnUint(getExchange, iUniswapExchange.address)
-      
+
     }
-  
+
 })
 
 function getBlockNumber() {
