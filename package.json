@@ -28,6 +28,7 @@
     "@gnosis.pm/util-contracts": "^2.0.0-RC4",
     "bignumber.js": "^8.0.1",
     "dotenv": "^5.0.1",
+    "ganache-cli": "^6.4.1",
     "openzeppelin-solidity": "^2.1.1",
     "prettier": "^1.15.3",
     "prettier-plugin-solidity-refactor": "^1.0.0-alpha.14",

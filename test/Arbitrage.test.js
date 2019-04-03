@@ -12,7 +12,7 @@ var BigNumber = require('bignumber.js')
 
 const _ = '        '
 const emptyAdd = '0x' + '0'.repeat(40)
-const gasPriceWeb3 = web3.utils.toBN(2000000000)
+const gasPriceWeb3 = web3.utils.toBN(20000000000)
 const gasPrice =     web3.utils.toBN(20000000000)
 
 
@@ -27,7 +27,6 @@ contract('ArbitrageLocal', function(accounts) {
   before(async () => {
       try {
         var totalGas = new BigNumber(0)
-
         // Create Mocks
         mockEthToken = await MockContract.new()
         var tx = await web3.eth.getTransactionReceipt(mockEthToken.transactionHash)
@@ -38,7 +37,6 @@ contract('ArbitrageLocal', function(accounts) {
         tx = await web3.eth.getTransactionReceipt(mockDutchExchange.transactionHash)
         totalGas = totalGas.plus(tx.gasUsed)
         console.log(_ + tx.gasUsed + ' - Deploy mockDutchExchange')
-
         mockUniswapFactory = await MockContract.new()
         tx = await web3.eth.getTransactionReceipt(mockUniswapFactory.transactionHash)
         totalGas = totalGas.plus(tx.gasUsed)
@@ -69,7 +67,7 @@ contract('ArbitrageLocal', function(accounts) {
         console.log(_ + totalGas.toFormat(0) + ' - Total Gas')
 
 
-        await setMocks()
+        await setMocks(accounts)
 
         // done()
       } catch (error) {
@@ -80,7 +78,9 @@ contract('ArbitrageLocal', function(accounts) {
 
 
     it('should not revert when depositEther()', async () => {
-      await arbitrage.depositEther({value: oneWei})
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
+      await arbitrage.depositEther({value: oneWei, nonce})
     })
 
     it('should revert when not owner & depositEther()', async () => {
@@ -104,34 +104,44 @@ contract('ArbitrageLocal', function(accounts) {
     })
 
     it('should not revert and update balances when withdrawEtherThenTransfer()', async () => {
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
       balanceLast = web3.utils.toBN(await web3.eth.getBalance(accounts[0]))
       const sendEtherToContract = await web3.eth.sendTransaction({
         from: accounts[0],
         to: arbitrage.address,
-        value: oneEth.toString(10)
+        value: oneEth.toString(10),
+        nonce
       });
       assert(sendEtherToContract.status, sendEtherToContract.status + ' wasn\'t true')
       gasSpent = web3.utils.toBN(sendEtherToContract.cumulativeGasUsed.toString(10)).mul(gasPriceWeb3)
       balanceNext = web3.utils.toBN(await web3.eth.getBalance(accounts[0]))
+
       shouldBe = balanceLast.sub(gasSpent).sub(oneEth) // oneEth should be removed
-      assert(balanceNext.toString(10) == shouldBe.toString(10), balanceNext + ' wasn\'t equal to ' + shouldBe)
+
+      assert(balanceNext.toString(10) == shouldBe.toString(10), balanceNext + ' wasn\'t equal to ' + shouldBe + ' (1)')
       balanceLast = balanceNext
 
-      tx = await arbitrage.withdrawEtherThenTransfer(oneEth.toString(10))
+      nonce = await web3.eth.getTransactionCount(accounts[0]);
+      tx = await arbitrage.withdrawEtherThenTransfer(oneEth.toString(10), {nonce})
       gasSpent = web3.utils.toBN(tx.receipt.cumulativeGasUsed).mul(gasPrice)
+
       balanceNext = web3.utils.toBN(await web3.eth.getBalance(accounts[0]))
       shouldBe = balanceLast.sub(gasSpent).add(oneEth) // oneEth should be returned
-      assert(balanceNext.toString(10) == shouldBe.toString(10), balanceNext + ' wasn\'t equal to ' + shouldBe)
+      assert(balanceNext.toString(10) == shouldBe.toString(10), balanceNext + ' wasn\'t equal to ' + shouldBe + ' (2)')
       balanceLast = balanceNext
       assert(tx.receipt.status, tx.receipt.status + ' wasn\'t true')
     })
 
-    it('should not revert and update blances when transferEther()', async () => {      
+    it('should not revert and update blances when transferEther()', async () => {  
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+          
       balanceLast = web3.utils.toBN(await web3.eth.getBalance(accounts[0]))
       const sendEtherToContract = await web3.eth.sendTransaction({
         from: accounts[0],
         to: arbitrage.address,
-        value: oneEth.toString(10)
+        value: oneEth.toString(10),
+        nonce
       });
       assert(sendEtherToContract.status, sendEtherToContract.status + ' wasn\'t true')
       gasSpent = web3.utils.toBN(sendEtherToContract.cumulativeGasUsed.toString(10)).mul(gasPriceWeb3)
@@ -139,8 +149,10 @@ contract('ArbitrageLocal', function(accounts) {
       shouldBe = balanceLast.sub(gasSpent).sub(oneEth) // oneEth should be removed
       assert(balanceNext.toString(10) == shouldBe.toString(10), balanceNext + ' wasn\'t equal to ' + shouldBe)
       balanceLast = balanceNext
-
-      tx = await arbitrage.transferEther(oneEth.toString(10))
+      
+      nonce = await web3.eth.getTransactionCount(accounts[0]);
+         
+      tx = await arbitrage.transferEther(oneEth.toString(10), {nonce})
       gasSpent = web3.utils.toBN(tx.receipt.cumulativeGasUsed).mul(gasPrice)
       balanceNext = web3.utils.toBN(await web3.eth.getBalance(accounts[0]))
       shouldBe = balanceLast.sub(gasSpent).add(oneEth) // oneEth should be returned
@@ -150,13 +162,17 @@ contract('ArbitrageLocal', function(accounts) {
     })
 
     it('should not revert when withdrawEther()', async () => {
-      await arbitrage.withdrawEther('1')
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+         
+      await arbitrage.withdrawEther('1', {nonce})
     })
 
     it('should revert when not owner & withdrawEther()', async () => {
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+         
       let err
       try {
-        await arbitrage.withdrawEther('1', {from: accounts[1]})
+        await arbitrage.withdrawEther('1', {from: accounts[1], nonce})
       } catch(error) {
         err = error
       }
@@ -164,13 +180,17 @@ contract('ArbitrageLocal', function(accounts) {
     })
 
     it('should not revert when withdrawToken()', async () => {
-      await arbitrage.withdrawToken(iToken.address, '1')
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
+      await arbitrage.withdrawToken(iToken.address, '1', {nonce})
     })
 
     it('should revert when not owner & withdrawToken()', async () => {
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
       let err
       try {
-        await arbitrage.withdrawToken(iToken.address, '1', {from: accounts[1]})
+        await arbitrage.withdrawToken(iToken.address, '1', {from: accounts[1], nonce})
       } catch(error) {
         err = error
       }
@@ -178,13 +198,17 @@ contract('ArbitrageLocal', function(accounts) {
     })
 
     it('should not revert when claimBuyerFunds()', async () => {
-      await arbitrage.claimBuyerFunds(iToken.address, 0)
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
+      await arbitrage.claimBuyerFunds(iToken.address, 0, {nonce})
     })
 
     it('should revert when not owner & claimBuyerFunds()', async () => {
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
       let err
       try {
-        await arbitrage.claimBuyerFunds(iToken.address, 0, {from: accounts[1]})
+        await arbitrage.claimBuyerFunds(iToken.address, 0, {from: accounts[1], nonce})
       } catch(error) {
         err = error
       }
@@ -192,13 +216,17 @@ contract('ArbitrageLocal', function(accounts) {
     })
 
     it('should not revert when transferToken()', async () => {
-      await arbitrage.transferToken(iToken.address, 0)
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
+      await arbitrage.transferToken(iToken.address, 0, {nonce})
     })
 
     it('should revert when not owner & transferToken()', async () => {
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
       let err
       try {
-        await arbitrage.transferToken(iToken.address, 0, {from: accounts[1]})
+        await arbitrage.transferToken(iToken.address, 0, {from: accounts[1], nonce})
       } catch(error) {
         err = error
       }
@@ -206,13 +234,17 @@ contract('ArbitrageLocal', function(accounts) {
     })
 
     it('should not revert when depositToken()', async () => {
-      await arbitrage.depositToken(iToken.address, oneWei)
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
+      await arbitrage.depositToken(iToken.address, oneWei, {nonce})
     })
 
     it('should revert when not owner & depositToken()', async () => {
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
       let err
       try {
-        await arbitrage.depositToken(iToken.address, {from: accounts[1]})
+        await arbitrage.depositToken(iToken.address, {from: accounts[1], nonce})
       } catch(error) {
         err = error
       }
@@ -220,22 +252,28 @@ contract('ArbitrageLocal', function(accounts) {
     })
 
     it('should not revert when dutchOpportunity()', async () => {
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
       // needs to be a balnce on the contract so when it deposits the imaginary arbitrage results
       // there is something to be "deposited"
       const sendEtherToContract = await web3.eth.sendTransaction({
         from: accounts[0],
         to: arbitrage.address,
-        value: oneWei.toString(10)
+        value: oneWei.toString(10),
+        nonce
       });
       assert(sendEtherToContract.status, sendEtherToContract.status + ' wasn\'t true')
-
-      await arbitrage.dutchOpportunity(iToken.address, oneWei)
+      nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
+      await arbitrage.dutchOpportunity(iToken.address, oneWei, {nonce})
     })
 
     it('should revert when not owner & dutchOpportunity()', async () => {
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
       let err
       try {
-        await arbitrage.dutchOpportunity(iToken.address, oneWei, {from: accounts[1]})
+        await arbitrage.dutchOpportunity(iToken.address, oneWei, {from: accounts[1], nonce})
       } catch(error) {
         err = error
       }
@@ -243,35 +281,41 @@ contract('ArbitrageLocal', function(accounts) {
     })
 
     it('should not revert when uniswapOpportunity()', async () => {
-
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
       const sendEtherToContract = await web3.eth.sendTransaction({
         from: accounts[0],
         to: arbitrage.address,
-        value: oneWei.toString(10)
+        value: oneWei.toString(10),
+        nonce
       });
       assert(sendEtherToContract.status, sendEtherToContract.status + ' wasn\'t true')
-
-      await arbitrage.uniswapOpportunity(iToken.address, oneWei)
+      nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
+      await arbitrage.uniswapOpportunity(iToken.address, oneWei, {nonce})
     })
 
     it('should revert when not owner & uniswapOpportunity()', async () => {
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+      
       let err
       try {
-        await arbitrage.uniswapOpportunity(iToken.address, oneWei, {from: accounts[1]})
+        await arbitrage.uniswapOpportunity(iToken.address, oneWei, {from: accounts[1], nonce})
       } catch(error) {
         err = error
       }
       assert(err, 'uniswapOpportunity as non-owner did not fail')
     })
 
-    async function setMocks() {
-      
+    async function setMocks(accounts) {
+      let nonce = await web3.eth.getTransactionCount(accounts[0]);
+
       const iToken_withdraw = iToken.contract.methods.withdraw(0).encodeABI()
-      await mockEthToken.givenMethodReturnBool(iToken_withdraw, true)
+      await mockEthToken.givenMethodReturnBool(iToken_withdraw, true, {nonce})
 
       const deposit = iToken.contract.methods.deposit().encodeABI()
       await mockEthToken.givenMethodReturn(deposit, [])
-      
+
       const balanceOf = iToken.contract.methods.balanceOf(emptyAdd).encodeABI()
       await mockEthToken.givenMethodReturnUint(balanceOf, '1')
       
@@ -316,7 +360,7 @@ contract('ArbitrageLocal', function(accounts) {
       
       const getExchange = iUniswapFactory.contract.methods.getExchange(emptyAdd).encodeABI()
       await mockUniswapFactory.givenMethodReturnUint(getExchange, iUniswapExchange.address)
-      
+
     }
   
 })

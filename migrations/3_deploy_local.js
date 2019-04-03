@@ -4,8 +4,8 @@ var IToken = artifacts.require('./IToken.sol')
 var IUniswapFactory = artifacts.require('./IUniswapFactory.sol')
 var IUniswapExchange = artifacts.require('./IUniswapExchange.sol')
 let _ = '        '
-
-const uniswapFactoryAddress = '0x4e71920b7330515faf5EA0c690f1aD06a85fB60c'
+const IUniswapFactoryArtifacts = require('../build/contracts/IUniswapFactory.json')
+// const uniswapFactoryAddress = '0x4e71920b7330515faf5EA0c690f1aD06a85fB60c'
 const deadline = '1649626618' // year 2022
 module.exports = (deployer, network, accounts) => {
   deployer.then(async () => {
@@ -39,7 +39,7 @@ module.exports = (deployer, network, accounts) => {
       // let arbitrage = await ArbitrageLocal.deployed()
       // console.log(_ + 'ArbitrageLocal deployed at: ' + arbitrage.address)
 
-
+      const uniswapFactoryAddress = IUniswapFactoryArtifacts.networks[deployer.network_id].address
       const uniswapFactory = await IUniswapFactory.at(uniswapFactoryAddress)
       const from = accounts[0]
 
