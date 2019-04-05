@@ -5,6 +5,7 @@ const IUniswapFactory = artifacts.require('./IUniswapFactory.sol')
 const IUniswapExchange = artifacts.require('./IUniswapExchange.sol')
 let _ = '        '
 
+const IUniswapFactoryArtifacts = require('../build/contracts/IUniswapFactory.json')
 const deadline = '1649626618' // year 2022
 module.exports = (deployer, network, accounts) => {
   return deployer
@@ -15,9 +16,8 @@ module.exports = (deployer, network, accounts) => {
         return
       }
 
-      const uniArtifact = JSON.parse(fs.readFileSync('build/contracts/IUniswapFactory.json', 'utf8'))
-      const uniswapFactory = await IUniswapFactory.at(
-        uniArtifact.networks[deployer.network_id].address)
+      const uniswapFactoryAddress = IUniswapFactoryArtifacts.networks[deployer.network_id].address
+      const uniswapFactory = await IUniswapFactory.at(uniswapFactoryAddress)
       const from = accounts[0]
 
       let iToken = await IToken.new()

@@ -4,6 +4,7 @@ const ArbitrageLocal = artifacts.require('./ArbitrageLocal.sol')
 const IUniswapFactory = artifacts.require('./IUniswapFactory.sol')
 const _ = '        '
 const DutchExchangeProxy = '0xa4392264a2d8c998901d10c154c91725b1bf0158'
+const fs = require('fs')
 
 module.exports = (deployer, network, accounts) => {
   return deployer.then(async () => {
