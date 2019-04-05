@@ -1,12 +1,12 @@
+const fs = require('fs')
 const SafeERC20 = artifacts.require('./SafeERC20.sol')
 const ArbitrageLocal = artifacts.require('./ArbitrageLocal.sol')
 const IUniswapFactory = artifacts.require('./IUniswapFactory.sol')
 const _ = '        '
 const DutchExchangeProxy = '0xa4392264a2d8c998901d10c154c91725b1bf0158'
-const fs = require('fs')
 
 module.exports = (deployer, network, accounts) => {
-  deployer.then(async () => {
+  return deployer.then(async () => {
     try {
       if(network !== 'development') {
         console.log(_ + 'Skip Migration: Not on local but on ' + network + ' instead')
@@ -20,11 +20,10 @@ module.exports = (deployer, network, accounts) => {
       tx = await web3.eth.sendTransaction({from: accounts[0], data: uniswapFactoryCode})
       txReceipt = await web3.eth.getTransactionReceipt(tx.transactionHash);
       let uniswapFactoryAddress = txReceipt.contractAddress
-      
+
       console.log(_ + 'uniswapFactoryAddress deployed at: ' + uniswapFactoryAddress)
 
-
-      var uniArtifact = JSON.parse(fs.readFileSync('build/contracts/IUniswapFactory.json', 'utf8'))
+      let uniArtifact = JSON.parse(fs.readFileSync('build/contracts/IUniswapFactory.json', 'utf8'))
       uniArtifact.networks[deployer.network_id] = {
         "events": {},
         "links": {},
@@ -37,9 +36,9 @@ module.exports = (deployer, network, accounts) => {
 
       const uniswapFactory = await IUniswapFactory.at(uniswapFactoryAddress)
       await uniswapFactory.initializeFactory(uniswapTemplateAddress)
- 
+
       const params = [uniswapFactory.address, DutchExchangeProxy]
-      
+
       // Deploy SafeERC20 and link to ArbitrageLocal.sol
       await deployer.deploy(SafeERC20);
       await deployer.link(SafeERC20, ArbitrageLocal);

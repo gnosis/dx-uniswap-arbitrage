@@ -39,7 +39,7 @@ yarn rpc
 yarn migrate
 
 # Rinkeby
-yarn migrate --network development
+yarn migrate --network rinkeby
 
 # Mainnet
 yarn mainnet --network mainnet

@@ -13,7 +13,7 @@ module.exports = {
     development: {
       provider() {
         var wallet = new HDWalletProvider(
-          process.env.TRUFFLE_MNEMONIC,
+          process.env.GANACHE_MNEMONIC,
           'http://localhost:8545/'
         )
         var nonceTracker = new NonceTrackerSubprovider()
@@ -30,7 +30,7 @@ module.exports = {
         var wallet = new HDWalletProvider(
           process.env.GANACHE_MNEMONIC,
           'http://localhost:7545'
-        )        
+        )
         var nonceTracker = new NonceTrackerSubprovider()
         wallet.engine._providers.unshift(nonceTracker)
         nonceTracker.setEngine(wallet.engine)
@@ -49,7 +49,7 @@ module.exports = {
           process.env.MAINNET_MNEMONIC,
           'https://mainnet.infura.io/v3/' + process.env.INFURA_API_KEY,
           1
-        )        
+        )
         var nonceTracker = new NonceTrackerSubprovider()
         wallet.engine._providers.unshift(nonceTracker)
         nonceTracker.setEngine(wallet.engine)
@@ -65,7 +65,7 @@ module.exports = {
           process.env.TESTNET_MNEMONIC,
           'https://kovan.infura.io/v3/' + process.env.INFURA_API_KEY,
           1
-        )        
+        )
         var nonceTracker = new NonceTrackerSubprovider()
         wallet.engine._providers.unshift(nonceTracker)
         nonceTracker.setEngine(wallet.engine)
@@ -80,7 +80,7 @@ module.exports = {
           process.env.TESTNET_MNEMONIC,
           'https://node.rinkeby.gnosisdev.com'
           // 'https://rinkeby.infura.io/v3/' + process.env.INFURA_API_KEY
-        )        
+        )
         var nonceTracker = new NonceTrackerSubprovider()
         wallet.engine._providers.unshift(nonceTracker)
         nonceTracker.setEngine(wallet.engine)
@@ -97,7 +97,7 @@ module.exports = {
         var wallet = new HDWalletProvider(
           process.env.TESTNET_MNEMONIC,
           'https://ropsten.infura.io/v3/' + process.env.INFURA_API_KEY
-        )        
+        )
         var nonceTracker = new NonceTrackerSubprovider()
         wallet.engine._providers.unshift(nonceTracker)
         nonceTracker.setEngine(wallet.engine)
@@ -111,7 +111,7 @@ module.exports = {
         var wallet = new HDWalletProvider(
           process.env.TESTNET_MNEMONIC,
           'https://sokol.poa.network'
-        )        
+        )
         var nonceTracker = new NonceTrackerSubprovider()
         wallet.engine._providers.unshift(nonceTracker)
         nonceTracker.setEngine(wallet.engine)
@@ -125,7 +125,7 @@ module.exports = {
         var wallet = new HDWalletProvider(
           process.env.TESTNET_MNEMONIC,
           'https://core.poa.network'
-        )        
+        )
         var nonceTracker = new NonceTrackerSubprovider()
         wallet.engine._providers.unshift(nonceTracker)
         nonceTracker.setEngine(wallet.engine)

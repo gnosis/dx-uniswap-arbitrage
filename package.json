@@ -25,21 +25,21 @@
     "test": "test"
   },
   "devDependencies": {
-    "@gnosis.pm/util-contracts": "^2.0.0-RC4",
+    "@gnosis.pm/util-contracts": "^2.0.0",
     "bignumber.js": "^8.0.1",
-    "dotenv": "^5.0.1",
-    "ganache-cli": "^6.4.1",
-    "openzeppelin-solidity": "^2.1.1",
-    "prettier": "^1.15.3",
+    "dotenv": "^7.0.0",
+    "ganache-cli": "^6.4.2",
+    "openzeppelin-solidity": "^2.2.0",
+    "prettier": "^1.16.4",
     "prettier-plugin-solidity-refactor": "^1.0.0-alpha.14",
-    "solium": "^1.1.7",
-    "truffle": "^5.0.2",
-    "truffle-hdwallet-provider": "^1.0.0-web3one.3"
+    "solium": "^1.2.3",
+    "truffle": "^5.0.11",
+    "truffle-hdwallet-provider": "^1.0.6"
   },
   "dependencies": {
     "@gnosis.pm/mock-contract": "^3.0.7",
     "solc": "^0.5.2",
-    "web3-provider-engine": "^14.1.0"
+    "web3-provider-engine": "^14.2.0"
   },
   "repository": {
     "type": "git",
