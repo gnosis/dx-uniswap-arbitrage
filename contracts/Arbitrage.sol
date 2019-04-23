@@ -81,16 +81,6 @@ contract Arbitrage is Ownable {
         return dutchXProxy.withdraw(token, amount);
     }
 
-    /// @dev Only owner can claim a token from an auction on the DutchX
-    /// @param token The token address that is being claimed.
-    /// @param dutchAuctionIndex The auction index of the token to be claimed.
-    /// @return Returns the amount actually claimed from the DutchX
-    function claimBuyerFunds(address token, uint dutchAuctionIndex) external onlyOwner returns (uint) {
-        address etherToken = dutchXProxy.ethToken();
-        (uint tokensClaimed, ) = dutchXProxy.claimBuyerFunds(token, etherToken, address(this), dutchAuctionIndex);
-        return tokensClaimed;
-    }
-
     /// @dev Only owner can transfer tokens to the owner that belong to this contract
     /// @param token The token address that is being transferred.
     /// @param amount The amount of token to transfer.
