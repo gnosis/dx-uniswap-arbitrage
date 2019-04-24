@@ -14,4 +14,8 @@ installed_contracts
 
 .env
 .history
+dist
 build
+coverage
+
+coverage.json
