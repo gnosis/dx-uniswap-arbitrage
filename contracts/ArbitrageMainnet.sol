@@ -4,7 +4,7 @@ import "./Arbitrage.sol";
 /// @author Billy Rennekamp - <billy@gnosis.pm>
 contract ArbitrageMainnet is Arbitrage {
     constructor() public {
-        uniFactory = IUniswapFactory(0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95); 
-        dutchXProxy = IDutchExchange(0xaf1745c0f8117384Dfa5FFf40f824057c70F2ed3);
+        uniFactory = IUniswapFactory(0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95);
+        dutchXProxy = IDutchExchange(0xb9812E2fA995EC53B5b6DF34d21f9304762C5497);
     }
 }
