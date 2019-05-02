@@ -36,7 +36,7 @@
     "prettier-plugin-solidity-refactor": "^1.0.0-alpha.14",
     "solium": "^1.1.7",
     "truffle": "^5.0.2",
-    "truffle-hdwallet-provider": "^1.0.0-web3one.3",
+    "truffle-hdwallet-provider": "^1.0.8",
     "verify-on-etherscan": "^1.1.1"
   },
   "dependencies": {

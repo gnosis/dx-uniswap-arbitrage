@@ -1,146 +1,105 @@
-require('dotenv').config()
+const assert = require('assert')
 const HDWalletProvider = require('truffle-hdwallet-provider')
+const GAS_PRICE_GWEI = process.env.GAS_PRICE_GWEI || 5
+const GAS_LIMIT = 6.5e6
 
-var NonceTrackerSubprovider = require("web3-provider-engine/subproviders/nonce-tracker")
+const DEFAULT_MNEMONIC = 'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat'
 
-module.exports = {
-  compilers: {
-    solc: {
-      version: "0.5.3"
+// Load env vars
+require('dotenv').config()
+
+// Get the mnemonic
+const privateKey = process.env.PK
+let mnemonic = process.env.MNEMONIC
+if (!privateKey && !mnemonic) {
+  mnemonic = DEFAULT_MNEMONIC
+}
+
+const infuraProjectId = process.env.INFURA_KEY
+function truffleConfig({
+  mnemonic = DEFAULT_MNEMONIC,
+  privateKey,
+  gasPriceGWei = GAS_PRICE_GWEI,
+  gas = GAS_LIMIT,
+  optimizedEnabled = true,
+  urlRinkeby = 'https://rinkeby.infura.io/v3/' + infuraProjectId,
+  urlKovan = 'https://kovan.infura.io/v3/' + infuraProjectId,
+  urlMainnet = 'https://mainnet.infura.io/v3/' + infuraProjectId,
+  urlDevelopment = 'localhost',
+  portDevelopment = 8545
+} = {}) {
+  assert(mnemonic, 'The mnemonic has not been provided');
+  console.log(`Using gas limit: ${gas / 1000} K`);
+  console.log(`Using gas price: ${gasPriceGWei} Gwei`);
+  console.log(`Optimizer enabled: ${optimizedEnabled}`);
+  console.log('Using default mnemonic: %s', mnemonic === DEFAULT_MNEMONIC);
+  const gasPrice = gasPriceGWei * 1e9;
+
+  let _getProvider
+  if (privateKey) {
+    console.log('Using private key')
+    _getProvider = url => {
+      return () => {
+        assert(infuraProjectId, "Need an infura ProjectID. INFURA_KEY env var")
+        return new HDWalletProvider([privateKey], url)
+      }
     }
-  },
-  networks: {
-    development: {
-      provider() {
-        var wallet = new HDWalletProvider(
-          _getCredentialsFromEnv('GANACHE'),
-          'http://localhost:8545/'
-        )
-        var nonceTracker = new NonceTrackerSubprovider()
-        wallet.engine._providers.unshift(nonceTracker)
-        nonceTracker.setEngine(wallet.engine)
-        return wallet
-      },
-      host: 'localhost',
-      port: 9545,
-      network_id: '*'
-    },
-    ganache: {
-      provider() {
-        var wallet = new HDWalletProvider(
-          _getCredentialsFromEnv('GANACHE'),
-          'http://localhost:7545'
-        )
-        var nonceTracker = new NonceTrackerSubprovider()
-        wallet.engine._providers.unshift(nonceTracker)
-        nonceTracker.setEngine(wallet.engine)
-        return wallet
-      },
-      host: 'localhost',
-      port: 7545,
-      network_id: 5777,
-      gas: 10000000,
-      gasPrice: 1000000000
-    },
-    mainnet: {
-      provider() {
-        // using wallet at index 1 ----------------------------------------------------------------------------------------v
-        var wallet = new HDWalletProvider(
-          _getCredentialsFromEnv('MAINNET'),
-          'https://mainnet.infura.io/v3/' + process.env.INFURA_API_KEY,
-          1
-        )
-        var nonceTracker = new NonceTrackerSubprovider()
-        wallet.engine._providers.unshift(nonceTracker)
-        nonceTracker.setEngine(wallet.engine)
-        return wallet
-      },
-      network_id: 1
-      // gas: 5561260
-    },
-    kovan: {
-      provider() {
-        // using wallet at index 1 ----------------------------------------------------------------------------------------v
-        var wallet = new HDWalletProvider(
-          _getCredentialsFromEnv('TESTNET'),
-          'https://kovan.infura.io/v3/' + process.env.INFURA_API_KEY,
-          1
-        )
-        var nonceTracker = new NonceTrackerSubprovider()
-        wallet.engine._providers.unshift(nonceTracker)
-        nonceTracker.setEngine(wallet.engine)
-        return wallet
-      },
-      network_id: 42
-      // gas: 5561260
-    },
-    rinkeby: {
-      provider() {
-        var wallet = new HDWalletProvider(
-          _getCredentialsFromEnv('TESTNET'),
-          'https://node.rinkeby.gnosisdev.com'
-          // 'https://rinkeby.infura.io/v3/' + process.env.INFURA_API_KEY
-        )
-        var nonceTracker = new NonceTrackerSubprovider()
-        wallet.engine._providers.unshift(nonceTracker)
-        nonceTracker.setEngine(wallet.engine)
-        return wallet
-      },
-      network_id: 4,
-      // confirmations: 3,
-      // websockets: true,
-      // gas: 4700000,
-      gasPrice: 20000000000 // 20 GWEI
-    },
-    ropsten: {
-      provider() {
-        var wallet = new HDWalletProvider(
-          _getCredentialsFromEnv('TESTNET'),
-          'https://ropsten.infura.io/v3/' + process.env.INFURA_API_KEY
-        )
-        var nonceTracker = new NonceTrackerSubprovider()
-        wallet.engine._providers.unshift(nonceTracker)
-        nonceTracker.setEngine(wallet.engine)
-        return wallet
-      },
-      network_id: 2
-      // gas: 4700000
-    },
-    sokol: {
-      provider() {
-        var wallet = new HDWalletProvider(
-          _getCredentialsFromEnv('TESTNET'),
-          'https://sokol.poa.network'
-        )
-        var nonceTracker = new NonceTrackerSubprovider()
-        wallet.engine._providers.unshift(nonceTracker)
-        nonceTracker.setEngine(wallet.engine)
-        return wallet
-      },
-      gasPrice: 1000000000,
-      network_id: 77
-    },
-    poa: {
-      provider() {
-        var wallet = new HDWalletProvider(
-          _getCredentialsFromEnv('TESTNET'),
-          'https://core.poa.network'
-        )
-        var nonceTracker = new NonceTrackerSubprovider()
-        wallet.engine._providers.unshift(nonceTracker)
-        nonceTracker.setEngine(wallet.engine)
-        return wallet
-      },
-      gasPrice: 1000000000,
-      network_id: 99
+  } else {
+    console.log(mnemonic === DEFAULT_MNEMONIC ? 'Using default mnemonic' : 'Using custom mnemonic')
+    _getProvider = url => {
+      return () => {
+        assert(infuraProjectId, "Need an infura ProjectID. INFURA_KEY env var")
+        return new HDWalletProvider(mnemonic, url)
+      }
     }
   }
+
+  return {
+    networks: {
+      development: {
+        host: process.env.RPC_URL || urlDevelopment,
+        port: portDevelopment,
+        gas,
+        gasPrice,
+        network_id: '*'
+      },
+      mainnet: {
+        provider: _getProvider(urlMainnet),
+        network_id: '1',
+        gas,
+        gasPrice
+      },
+      rinkeby: {
+        provider: _getProvider(urlRinkeby),
+        network_id: '4',
+        gas,
+        gasPrice
+      },
+      kovan: {
+        provider: _getProvider(urlKovan),
+        network_id: '42',
+        gas,
+        gasPrice
+      },
+    },
+    compilers: {
+      solc: {
+        version: '0.5.2',
+        docker: process.env.SOLC_USE_DOCKER === 'true' || false,
+        settings: {
+          optimizer: {
+            enabled: optimizedEnabled, // Default: false
+            runs: 200
+          }
+          // evmVersion: "byzantium"  // Default: "byzantium". Others:  "homestead", ...
+        }
+      }
+    }
+  };
 }
 
-
-function _getCredentialsFromEnv(name) {
-  const mnemonic = process.env[name + '_MNEMONIC']
-  const pk = process.env[name + '_PK']
-
-  return pk ? [pk] : mnemonic
-}
+module.exports = truffleConfig({
+  optimizedEnabled: true,
+  mnemonic,
+  privateKey
+})
