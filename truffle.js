@@ -13,7 +13,7 @@ module.exports = {
     development: {
       provider() {
         var wallet = new HDWalletProvider(
-          process.env.GANACHE_MNEMONIC,
+          _getCredentialsFromEnv('GANACHE'),
           'http://localhost:8545/'
         )
         var nonceTracker = new NonceTrackerSubprovider()
@@ -28,7 +28,7 @@ module.exports = {
     ganache: {
       provider() {
         var wallet = new HDWalletProvider(
-          process.env.GANACHE_MNEMONIC,
+          _getCredentialsFromEnv('GANACHE'),
           'http://localhost:7545'
         )
         var nonceTracker = new NonceTrackerSubprovider()
@@ -46,7 +46,7 @@ module.exports = {
       provider() {
         // using wallet at index 1 ----------------------------------------------------------------------------------------v
         var wallet = new HDWalletProvider(
-          process.env.MAINNET_MNEMONIC,
+          _getCredentialsFromEnv('MAINNET'),
           'https://mainnet.infura.io/v3/' + process.env.INFURA_API_KEY,
           1
         )
@@ -62,7 +62,7 @@ module.exports = {
       provider() {
         // using wallet at index 1 ----------------------------------------------------------------------------------------v
         var wallet = new HDWalletProvider(
-          process.env.TESTNET_MNEMONIC,
+          _getCredentialsFromEnv('TESTNET'),
           'https://kovan.infura.io/v3/' + process.env.INFURA_API_KEY,
           1
         )
@@ -77,7 +77,7 @@ module.exports = {
     rinkeby: {
       provider() {
         var wallet = new HDWalletProvider(
-          process.env.TESTNET_MNEMONIC,
+          _getCredentialsFromEnv('TESTNET'),
           'https://node.rinkeby.gnosisdev.com'
           // 'https://rinkeby.infura.io/v3/' + process.env.INFURA_API_KEY
         )
@@ -95,7 +95,7 @@ module.exports = {
     ropsten: {
       provider() {
         var wallet = new HDWalletProvider(
-          process.env.TESTNET_MNEMONIC,
+          _getCredentialsFromEnv('TESTNET'),
           'https://ropsten.infura.io/v3/' + process.env.INFURA_API_KEY
         )
         var nonceTracker = new NonceTrackerSubprovider()
@@ -109,7 +109,7 @@ module.exports = {
     sokol: {
       provider() {
         var wallet = new HDWalletProvider(
-          process.env.TESTNET_MNEMONIC,
+          _getCredentialsFromEnv('TESTNET'),
           'https://sokol.poa.network'
         )
         var nonceTracker = new NonceTrackerSubprovider()
@@ -123,7 +123,7 @@ module.exports = {
     poa: {
       provider() {
         var wallet = new HDWalletProvider(
-          process.env.TESTNET_MNEMONIC,
+          _getCredentialsFromEnv('TESTNET'),
           'https://core.poa.network'
         )
         var nonceTracker = new NonceTrackerSubprovider()
@@ -135,4 +135,12 @@ module.exports = {
       network_id: 99
     }
   }
+}
+
+
+function _getCredentialsFromEnv(name) {
+  const mnemonic = process.env[name + '_MNEMONIC']
+  const pk = process.env[name + '_PK']
+
+  return pk ? [pk] : mnemonic
 }

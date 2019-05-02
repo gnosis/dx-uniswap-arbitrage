@@ -21,7 +21,6 @@
     "migrate": "npx truffle migrate --reset --compile-all",
     "debug": "npx truffle compile --reset --compile-all && npx truffle test test/Debug.js",
     "install": "cd $INIT_CWD && npm explore truffle -- npm install solc@0.5.2"
-
   },
   "main": "index.js",
   "directories": {
@@ -35,10 +34,10 @@
     "openzeppelin-solidity": "^2.2.0",
     "prettier": "^1.16.4",
     "prettier-plugin-solidity-refactor": "^1.0.0-alpha.14",
-    "solidity-coverage": "^0.5.11",
-    "solium": "^1.2.3",
-    "truffle": "^5.0.11",
-    "truffle-hdwallet-provider": "^1.0.6"
+    "solium": "^1.1.7",
+    "truffle": "^5.0.2",
+    "truffle-hdwallet-provider": "^1.0.0-web3one.3",
+    "verify-on-etherscan": "^1.1.1"
   },
   "dependencies": {
     "@gnosis.pm/mock-contract": "^3.0.7",
