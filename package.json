@@ -1,7 +1,7 @@
 {
   "name": "@gnosis.pm/dx-uniswap-arbitrage",
   "version": "0.1.4",
-  "description": "Truffle Boilerplate with solium, linguist, zeppelin, migrations, tests &tc",
+  "description": "An Ethereum contract to execute arbitrage functions against DutchX protocol",
   "scripts": {
     "rpc": "ganache-cli -d --mnemonic 'grid voyage cream cry fence load stove sort grief fuel room save' --defaultBalanceEther '500000000000000000000'",
     "test": "truffle test test/*.test.js",
@@ -34,6 +34,7 @@
     "openzeppelin-solidity": "^2.2.0",
     "prettier": "^1.16.4",
     "prettier-plugin-solidity-refactor": "^1.0.0-alpha.14",
+    "solidity-coverage": "^0.5.11",
     "solium": "^1.1.7",
     "truffle": "^5.0.2",
     "truffle-hdwallet-provider": "^1.0.8",
