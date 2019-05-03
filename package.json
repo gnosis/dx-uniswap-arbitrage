@@ -1,6 +1,6 @@
 {
   "name": "@gnosis.pm/dx-uniswap-arbitrage",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "An Ethereum contract to execute arbitrage functions against DutchX protocol",
   "scripts": {
     "rpc": "ganache-cli -d --mnemonic 'grid voyage cream cry fence load stove sort grief fuel room save' --defaultBalanceEther '500000000000000000000'",
