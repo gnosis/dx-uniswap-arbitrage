@@ -11,5 +11,6 @@ import "./SafeERC20.sol";
 import "./ArbitrageLocal.sol";
 import "./IUniswapFactory.sol";
 import "./IUniswapExchange.sol";
+import "./IToken.sol";
 
 contract ArbitrageDependencies {}

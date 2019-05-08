@@ -105,16 +105,20 @@ contract Arbitrage is Ownable {
     /// @dev Internal function to deposit token to the DutchX
     /// @param token The token address that is being deposited.
     /// @param amount The amount of token to deposit.
-    function _depositToken(address token, uint amount) internal {
+    function _depositToken(address token, uint amount) internal returns(uint deposited) {
+        uint balance = ITokenMinimal(token).balanceOf(address(this));
+        uint min = balance < amount ? balance : amount;
+        require(min > 0, "Balance of token insufficient");
 
         uint allowance = ITokenMinimal(token).allowance(address(this), address(dutchXProxy));
-        if (allowance < amount) {
+        if (allowance < min) {
             SafeERC20.safeApprove(token, address(dutchXProxy), max);
         }
 
         // Confirm that the balance of the token on the DutchX is at least how much was deposited
-        uint newBalance = dutchXProxy.deposit(token, amount);
-        require(newBalance >= amount, "deposit didn't work");
+        uint newBalance = dutchXProxy.deposit(token, min);
+        require(newBalance >= min, "deposit didn't work");
+        return min;
     }
 
     /// @dev Executes a trade opportunity on dutchX. Assumes that there is a balance of WETH already on the dutchX
@@ -178,7 +182,7 @@ contract Arbitrage is Ownable {
         uint256 tokensBought = IUniswapExchange(uniFactory.getExchange(arbToken)).ethToTokenSwapInput.value(amount)(1, block.timestamp);
 
         // tokens need to be approved for the dutchX before they are deposited
-        _depositToken(arbToken, tokensBought);
+        tokensBought = _depositToken(arbToken, tokensBought);
 
         address etherToken = dutchXProxy.ethToken();
 
