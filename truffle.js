@@ -15,7 +15,7 @@ if (!privateKey && !mnemonic) {
   mnemonic = DEFAULT_MNEMONIC
 }
 
-const infuraProjectId = process.env.INFURA_KEY
+const infuraProjectId = process.env.INFURA_KEY || '9408f47dedf04716a03ef994182cf150'
 function truffleConfig({
   mnemonic = DEFAULT_MNEMONIC,
   privateKey,
