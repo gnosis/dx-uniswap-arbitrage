@@ -92,10 +92,11 @@ contract Arbitrage is Ownable {
     }
 
     /// @dev Only owner can approve tokens to be used by the DutchX
-    /// @param token The token address to be approved for useapproveToken
+    /// @param token The token address to be approved for use
+    /// @param spender The address that should be approved
     /// @param allowance The amount of tokens that should be approved
-    function approveToken(address token, uint allowance) external onlyOwner {
-        SafeERC20.safeApprove(token, address(dutchXProxy), allowance);
+    function approveToken(address token, address spender, uint allowance) external onlyOwner {
+        SafeERC20.safeApprove(token, spender, allowance);
     }
 
     /// @dev Only owner can deposit token to the DutchX
