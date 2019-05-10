@@ -56,15 +56,10 @@ library SafeERC20 {
 
         // Must be a contract addr first!
         require(_erc20Addr.isContract(), "ERC20 is not a contract");
-
-        // vvv
-        // This section has been commented out because it is not a necesarry safeguard
-        // vvv
-        /*
+        
         // safeApprove should only be called when setting an initial allowance,
         // or when resetting it to zero.
         require((_value == 0) || (IERC20(_erc20Addr).allowance(address(this), _spender) == 0), "safeApprove should only be called when setting an initial allowance, or when resetting it to zero.");
-        */
 
         (bool success, bytes memory returnValue) =
         // solhint-disable-next-line avoid-low-level-calls

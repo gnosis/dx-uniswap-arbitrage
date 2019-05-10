@@ -35,6 +35,9 @@ contract Arbitrage is Ownable {
         uint allowance = ITokenMinimal(weth).allowance(address(this), address(dutchXProxy));
 
         if (allowance < wethBalance) {
+            if (allowance != 0) {
+                SafeERC20.safeApprove(weth, address(dutchXProxy), 0);
+            }
             // Approve max amount of WETH to be transferred by dutchX
             // Keeping it max will have same or similar costs to making it exact over and over again
             SafeERC20.safeApprove(weth, address(dutchXProxy), max);
@@ -89,7 +92,7 @@ contract Arbitrage is Ownable {
     }
 
     /// @dev Only owner can approve tokens to be used by the DutchX
-    /// @param token The token address to be approved for use
+    /// @param token The token address to be approved for useapproveToken
     /// @param allowance The amount of tokens that should be approved
     function approveToken(address token, uint allowance) external onlyOwner {
         SafeERC20.safeApprove(token, address(dutchXProxy), allowance);
@@ -112,6 +115,9 @@ contract Arbitrage is Ownable {
 
         uint allowance = ITokenMinimal(token).allowance(address(this), address(dutchXProxy));
         if (allowance < min) {
+            if (allowance != 0) {
+                SafeERC20.safeApprove(weth, address(dutchXProxy), 0);
+            }
             SafeERC20.safeApprove(token, address(dutchXProxy), max);
         }
 
@@ -145,6 +151,9 @@ contract Arbitrage is Ownable {
 
         uint allowance = ITokenMinimal(arbToken).allowance(address(this), address(uniswapExchange));
         if (allowance < tokensBought) {
+            if (allowance != 0) {
+                SafeERC20.safeApprove(arbToken, address(uniswapExchange), 0);
+            }
             // Approve Uniswap to transfer arbToken on contract's behalf
             // Keeping it max will have same or similar costs to making it exact over and over again
             SafeERC20.safeApprove(arbToken, address(uniswapExchange), max);
