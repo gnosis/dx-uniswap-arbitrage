@@ -201,24 +201,6 @@ contract('ArbitrageLocal', function(accounts) {
       assert(err, 'withdrawToken as non-owner did not fail')
     })
 
-    it('should not revert when claimBuyerFunds()', async () => {
-      let nonce = await web3.eth.getTransactionCount(accounts[0]);
-
-      await arbitrage.claimBuyerFunds(iToken.address, 0, {nonce})
-    })
-
-    it('should revert when not owner & claimBuyerFunds()', async () => {
-      let nonce = await web3.eth.getTransactionCount(accounts[0]);
-
-      let err
-      try {
-        await arbitrage.claimBuyerFunds(iToken.address, 0, {from: accounts[1], nonce})
-      } catch(error) {
-        err = error
-      }
-      assert(err, 'claimBuyerFunds as non-owner did not fail')
-    })
-
     it('should not revert when transferToken()', async () => {
       let nonce = await web3.eth.getTransactionCount(accounts[0]);
 
