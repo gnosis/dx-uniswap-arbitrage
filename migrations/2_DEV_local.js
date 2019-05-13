@@ -21,7 +21,6 @@ module.exports = (deployer, network, accounts) => {
         console.log(_ + 'Skip Migration: Not on local but on ' + network + ' instead')
         return
       }
-
       const { uniswapFactory } = await deploy({ deployer, accounts })
       await setup({ deployer, accounts, uniswapFactory })
     } catch (error) {
@@ -32,14 +31,22 @@ module.exports = (deployer, network, accounts) => {
 
 
 async function deploy({ deployer, accounts }) {
-  let tx = await web3.eth.sendTransaction({ from: accounts[0], data: uniswapExchangeCode })
+  let tx = await web3.eth.sendTransaction({
+    from: accounts[0],
+    data: uniswapExchangeCode,
+    gas: 6.5e6,
+    gasPrice:  1 * 1e9 // GWEI
+  })
   let txReceipt = await web3.eth.getTransactionReceipt(tx.transactionHash);
   let uniswapTemplateAddress = txReceipt.contractAddress
-
-  tx = await web3.eth.sendTransaction({ from: accounts[0], data: uniswapFactoryCode })
+  tx = await web3.eth.sendTransaction({
+    from: accounts[0],
+    data: uniswapFactoryCode,
+    gas: 6.5e6,
+    gasPrice:  1 * 1e9 // GWEI
+  })
   txReceipt = await web3.eth.getTransactionReceipt(tx.transactionHash);
   let uniswapFactoryAddress = txReceipt.contractAddress
-
   console.log(_ + 'uniswapFactoryAddress deployed at: ' + uniswapFactoryAddress)
 
   let uniArtifact = JSON.parse(fs.readFileSync('build/contracts/IUniswapFactory.json', 'utf8'))
