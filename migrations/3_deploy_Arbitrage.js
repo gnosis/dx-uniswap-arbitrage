@@ -27,7 +27,7 @@ function getContractName(network) {
     return 'ArbitrageRinkeby'
   } else if (network === 'kovan-fork' || network === 'kovan') {
     return 'ArbitrageKovan'
-  } else if (network === 'rinkeby-fork' || network === 'rinkeby') {
+  } else if (network === 'mainnet-fork' || network === 'mainnet') {
     return 'ArbitrageMainnet'
   } else {
     throw new Error('Unknown network: ' + network)
