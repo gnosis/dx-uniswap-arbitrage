@@ -12,9 +12,10 @@ var BigNumber = require('bignumber.js')
 
 const _ = '        '
 const emptyAdd = '0x' + '0'.repeat(40)
-const gasPriceWeb3 = web3.utils.toBN(20000000000)
-const gasPrice =     web3.utils.toBN(20000000000)
 
+const truffleConfigs = require('../truffle.js')
+
+const gasPrice = web3.utils.toBN(truffleConfigs.networks.development.gasPrice)
 
 contract('ArbitrageLocal', function(accounts) {
 
@@ -112,10 +113,11 @@ contract('ArbitrageLocal', function(accounts) {
         from: accounts[0],
         to: arbitrage.address,
         value: oneEth.toString(10),
-        nonce
+        nonce,
+        gasPrice
       });
       assert(sendEtherToContract.status, sendEtherToContract.status + ' wasn\'t true')
-      gasSpent = web3.utils.toBN(sendEtherToContract.cumulativeGasUsed.toString(10)).mul(gasPriceWeb3)
+      gasSpent = web3.utils.toBN(sendEtherToContract.cumulativeGasUsed.toString(10)).mul(gasPrice)
       balanceNext = web3.utils.toBN(await web3.eth.getBalance(accounts[0]))
 
       shouldBe = balanceLast.sub(gasSpent).sub(oneEth) // oneEth should be removed
@@ -142,10 +144,11 @@ contract('ArbitrageLocal', function(accounts) {
         from: accounts[0],
         to: arbitrage.address,
         value: oneEth.toString(10),
-        nonce
+        nonce,
+        gasPrice
       });
       assert(sendEtherToContract.status, sendEtherToContract.status + ' wasn\'t true')
-      gasSpent = web3.utils.toBN(sendEtherToContract.cumulativeGasUsed.toString(10)).mul(gasPriceWeb3)
+      gasSpent = web3.utils.toBN(sendEtherToContract.cumulativeGasUsed.toString(10)).mul(gasPrice)
       balanceNext = web3.utils.toBN(await web3.eth.getBalance(accounts[0]))
       shouldBe = balanceLast.sub(gasSpent).sub(oneEth) // oneEth should be removed
       assert(balanceNext.toString(10) == shouldBe.toString(10), balanceNext + ' wasn\'t equal to ' + shouldBe)
@@ -196,24 +199,6 @@ contract('ArbitrageLocal', function(accounts) {
         err = error
       }
       assert(err, 'withdrawToken as non-owner did not fail')
-    })
-
-    it('should not revert when claimBuyerFunds()', async () => {
-      let nonce = await web3.eth.getTransactionCount(accounts[0]);
-
-      await arbitrage.claimBuyerFunds(iToken.address, 0, {nonce})
-    })
-
-    it('should revert when not owner & claimBuyerFunds()', async () => {
-      let nonce = await web3.eth.getTransactionCount(accounts[0]);
-
-      let err
-      try {
-        await arbitrage.claimBuyerFunds(iToken.address, 0, {from: accounts[1], nonce})
-      } catch(error) {
-        err = error
-      }
-      assert(err, 'claimBuyerFunds as non-owner did not fail')
     })
 
     it('should not revert when transferToken()', async () => {
