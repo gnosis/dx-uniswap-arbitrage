@@ -117,7 +117,7 @@ contract Arbitrage is Ownable {
         uint allowance = ITokenMinimal(token).allowance(address(this), address(dutchXProxy));
         if (allowance < min) {
             if (allowance != 0) {
-                SafeERC20.safeApprove(weth, address(dutchXProxy), 0);
+                SafeERC20.safeApprove(token, address(dutchXProxy), 0);
             }
             SafeERC20.safeApprove(token, address(dutchXProxy), max);
         }
