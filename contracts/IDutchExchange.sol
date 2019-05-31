@@ -1,7 +1,10 @@
 pragma solidity ^0.5.0;
 
+import "./IFrtToken.sol";
+
 contract IDutchExchange {
 
+    IFrtToken public frtToken;
 
     mapping(address => mapping(address => uint)) public balances;
 
@@ -13,7 +16,7 @@ contract IDutchExchange {
     mapping(address => mapping(address => mapping(uint => mapping(address => uint)))) public buyerBalances;
     mapping(address => mapping(address => mapping(uint => mapping(address => uint)))) public claimedAmounts;
 
-    
+
     function ethToken() public view returns(address);
     function claimBuyerFunds(address, address, address, uint) public returns(uint, uint);
     function deposit(address tokenAddress, uint amount) public returns (uint);
