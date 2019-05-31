@@ -18,10 +18,10 @@ async function migrate({
   if (network === 'development') {
 
     var SafeERC20 = artifacts.require('SafeERC20')
-    var IToken = artifacts.require('IToken')
-    var ArbitrageLocal = artifacts.require('ArbitrageLocal')
     var IUniswapFactory = artifacts.require('IUniswapFactory')
     var IUniswapExchange = artifacts.require('IUniswapExchange')
+    var IToken = artifacts.require('IToken')
+    var ArbitrageLocal = artifacts.require('ArbitrageLocal')
 
     try {
       // console.log(web3)
@@ -50,9 +50,9 @@ async function migrate({
 
       let uniswapFactory = await IUniswapFactory.at(uniswapFactoryAddress)
       await uniswapFactory.initializeFactory(uniswapTemplateAddress)
-  
+
       const params = [uniswapFactory.address, DutchExchangeProxy]
-      
+
       // Deploy SafeERC20 and link to ArbitrageLocal.sol
       await deployer.deploy(SafeERC20);
       await deployer.link(SafeERC20, ArbitrageLocal);

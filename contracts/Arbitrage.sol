@@ -3,6 +3,7 @@ pragma solidity ^0.5.0;
 import "./IUniswapExchange.sol";
 import "./IUniswapFactory.sol";
 import "./IDutchExchange.sol";
+import "./IFrtToken.sol";
 import "./ITokenMinimal.sol";
 import "./SafeERC20.sol";
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
@@ -89,6 +90,25 @@ contract Arbitrage is Ownable {
     /// @param amount The amount of token to transfer.
     function transferToken(address token, uint amount) external onlyOwner {
         SafeERC20.safeTransfer(token, owner(), amount);
+    }
+
+    /// @dev Only owner can unlock MGN tokens
+    function unlockFrt() external onlyOwner returns (uint totalAmountUnlocked, uint withdrawalTime) {
+      IFrtToken frtToken = dutchXProxy.frtToken();
+      return frtToken.unlockTokens();
+    }
+
+    /// @dev Only owner can lock MGN tokens
+    /// @param amount  The amount of token to lock
+    function lockFrt(uint amount) external onlyOwner returns (uint totalAmountLocked) {
+      IFrtToken frtToken = dutchXProxy.frtToken();
+      return frtToken.lockTokens(amount);
+    }
+
+    /// @dev Only owner can withdraw unlocked tokens
+    function withdrawFrt() external onlyOwner {
+      IFrtToken frtToken = dutchXProxy.frtToken();
+      frtToken.withdrawUnlockedTokens();
     }
 
     /// @dev Only owner can approve tokens to be used by the DutchX
